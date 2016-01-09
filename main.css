@@ -6,6 +6,11 @@ body, html {
 	text-align: center;
 }
 
+li {
+	text-align: left;
+	font-size: 18px;
+}
+
 #chart {
 	background-color: #f5f2eb;
 	border: 1px solid #ccc;

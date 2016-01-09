@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Learning D3</title>
+	<link rel="stylesheet" href="main.css">
+	<script  type="text/javascript" src="d3.min.js"></script>
+</head>
+<body>
+
+<script>
+var data = [
+	{key: "Glazed", value: 132},
+	{key: "Jelly", value: 71},
+	{key: "Holes", value: 337},
+	{key: "Sprinkles", value: 93},
+	{key: "Crumb", value: 78},
+	{key: "Chocolate", value: 43},
+	{key: "Coconut", value: 20},
+	{key: "Cream", value: 16},
+	{key: "Cruller", value: 30},
+	{key: "Eclair", value: 8},
+	{key: "Fritter", value: 17},
+	{key: "Bearclaw", value: 21},
+];
+
+var width = 800;
+var height = 450;
+var margin = {
+	top: 20,
+	right: 20,
+	bottom: 20,
+	left: 20
+};
+var innerWidth = width - margin.left - margin.right;
+var innerHeight = height - margin.top - margin.bottom;
+
+// define functions to scale x and y values so graph will fill
+// available space
+var scaleX = d3.scale.linear()
+				.domain([0, d3.max(data, function(d) {
+					return d.value;
+				})])
+				.range([0, innerWidth]);
+
+var scaleY = d3.scale.linear()
+				.domain([0, data.length])
+				.range([0, innerHeight]);
+
+var svg = d3.select("body").append("svg")
+						.attr("id", "chart")
+						.attr("width", width)
+						.attr("height", height);
+var chart = svg.append("g")
+						.classed("display", true)
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+function plot(params) {
+	// bind d3 to elements with class "bar"
+	this.selectAll(".bar")
+		.data(params.data)
+		.enter()
+			// append rect element for each piece of data bound above (.data(data))
+			.append("rect") 
+			.classed("bar", true)
+			.attr("x", 0)
+			// position each data element on the y axis
+			.attr("y", function(d, i) {
+				return scaleY(i);
+			})
+			// set width to the value of the data item
+			.attr("width", function(d) {
+				return scaleX(d.value);
+			})
+			.attr("height", function(d, i) {
+				return scaleY(1) - 1;
+			});
+
+	// create text labels for bars
+	this.selectAll(".bar-label")
+		.data(params.data)
+		.enter()
+			.append("text")
+			.classed("bar-label", true)
+			.attr("x", function(d) {
+				return scaleX(d.value);
+			})
+			.attr("y", function(d, i) {
+				return scaleY(i);
+			})
+			// nudge y position
+			.attr("dy", function(d, i) {
+				return scaleY(1)/1.5 + 2;
+			})
+			.text(function(d) {
+				return d.value;
+			});
+
+}
+
+// use call method to allow us to assign 'this' object
+plot.call(chart, {
+	data: data
+});
+</script>	
+</body>
+</html>
