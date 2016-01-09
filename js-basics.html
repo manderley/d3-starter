@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JS basics</title>
+	<link rel="stylesheet" href="main.css">
+	<script  type="text/javascript" src="d3.min.js"></script>
+</head>
+<body>
+
+<script>
+
+var data = [132, 71, 337, 93, 78, 43, 20, 16, 30, 8, 17, 21];
+
+var donuts = [
+	{key: "Glazed", value: 132},
+	{key: "Jelly", value: 71},
+	{key: "Holes", value: 337},
+	{key: "Sprinkles", value: 93},
+	{key: "Crumb", value: 78},
+	{key: "Chocolate", value: 43},
+	{key: "Coconut", value: 20},
+	{key: "Cream", value: 16},
+	{key: "Cruller", value: 30},
+	{key: "Eclair", value: 8},
+	{key: "Fritter", value: 17},
+	{key: "Bearclaw", value: 21},
+];
+
+// looping over data
+for (i = 0, len = data.length; i < len; i++) {
+	//console.log(data[i]);
+}
+
+for (i = 0, len = donuts.length; i < len; i++) {
+	//console.log(donuts[i].value);
+}
+
+// forEach is slower than for loop
+data.forEach(function(item) {
+	//console.log(item);
+})
+
+// using filter method - to create a new array with items which meet condition
+var dataGreaterThan50 = data.filter(function(entry) {
+	return entry > 50;
+});
+
+//console.log("dataGreaterThan50: ", dataGreaterThan50);
+
+var donutsGreaterThan50 = donuts.filter(function(donut) {
+	return donut.value > 50;
+});
+
+//console.log("donutsGreaterThan50: ", donutsGreaterThan50);
+
+// using map method - to perform a function on each item in an array
+var reformattedDonuts = donuts.map(function(item) {
+	return {
+		donut: item.key,
+		qty: item.value
+	}
+});
+
+reformattedDonuts.forEach(function(donut) {
+	console.log(donut);
+})
+</script>	
+</body>
+</html>
