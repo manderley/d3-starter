@@ -45,7 +45,25 @@ svg.selectAll(".bar")
 		})
 		.attr("height", function(d, i) {
 			return scaleY(1) - 1;
+		});
+
+// create text labels for bars
+svg.selectAll(".bar-label")
+	.data(data)
+	.enter()
+		.append("text")
+		.classed("bar-label", true)
+		.attr("x", 0)
+		.attr("y", function(d, i) {
+			return scaleY(i);
 		})
+		// nudge y position
+		.attr("dy", function(d, i) {
+			return scaleY(1)/1.5 + 2;
+		})
+		.text(function(d, i) {
+			return d;
+		});
 
 </script>	
 </body>
