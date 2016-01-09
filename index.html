@@ -11,11 +11,33 @@
 <script>
 var width = 800;
 var height = 450;
+var margin = {
+	top: 20,
+	right: 20,
+	bottom: 20,
+	left: 20
+};
+var innerWidth = width - margin.left - margin.right;
+var innerHeight = height - margin.top - margin.bottom;
+
 var data = [132, 71, 337, 93, 78, 43, 20, 16, 30, 8, 17, 21];
+// define functions to scale x and y values so graph will fill
+// available space
+var scaleX = d3.scale.linear()
+				.domain([0, d3.max(data)])
+				.range([0, innerWidth]);
+
+var scaleY = d3.scale.linear()
+				.domain([0, data.length])
+				.range([0, innerHeight]);
+
 var svg = d3.select("body").append("svg")
 						.attr("id", "chart")
 						.attr("width", width)
 						.attr("height", height);
+var chart = svg.append("g")
+						.classed("display", true)
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 function plot(params) {
 	// bind d3 to elements with class "bar"
@@ -60,18 +82,8 @@ function plot(params) {
 
 }
 
-// define functions to scale x and y values so graph will fill
-// available space
-var scaleX = d3.scale.linear()
-				.domain([0, d3.max(data)])
-				.range([0, width]);
-
-var scaleY = d3.scale.linear()
-				.domain([0, data.length])
-				.range([0, height])
-
 // use call method to allow us to assign 'this' object
-plot.call(svg, {
+plot.call(chart, {
 	data: data
 });
 </script>	
