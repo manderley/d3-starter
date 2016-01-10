@@ -43,9 +43,11 @@ var scaleX = d3.scale.linear()
 				})])
 				.range([0, innerWidth]);
 
-var scaleY = d3.scale.linear()
-				.domain([0, data.length])
-				.range([0, innerHeight]);
+var scaleY = d3.scale.ordinal()
+				.domain(data.map(function(entry) {
+					return entry.key;
+				}))
+				.rangeBands([0, innerHeight]);
 
 var svg = d3.select("body").append("svg")
 						.attr("id", "chart")
@@ -66,14 +68,15 @@ function plot(params) {
 			.attr("x", 0)
 			// position each data element on the y axis
 			.attr("y", function(d, i) {
-				return scaleY(i);
+				return scaleY(d.key);
 			})
 			// set width to the value of the data item
 			.attr("width", function(d) {
 				return scaleX(d.value);
 			})
+			// set height to height of one band
 			.attr("height", function(d, i) {
-				return scaleY(1) - 1;
+				return scaleY.rangeBand() - 1;
 			});
 
 	// create text labels for bars
@@ -86,11 +89,11 @@ function plot(params) {
 				return scaleX(d.value);
 			})
 			.attr("y", function(d, i) {
-				return scaleY(i);
+				return scaleY(d.key);
 			})
 			// nudge y position
 			.attr("dy", function(d, i) {
-				return scaleY(1)/1.5 + 2;
+				return scaleY.rangeBand()/1.5 + 2;
 			})
 			.text(function(d) {
 				return d.value;
