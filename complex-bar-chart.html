@@ -49,6 +49,12 @@ var scaleY = d3.scale.ordinal()
 				}))
 				.rangeBands([0, innerHeight]);
 
+var linearColourScale = d3.scale.linear()
+													.domain([0, data.length])
+													.range(["#572500", "#f68026"]);
+
+var ordinalColourScale = d3.scale.category20();
+
 var svg = d3.select("body").append("svg")
 						.attr("id", "chart")
 						.attr("width", width)
@@ -77,6 +83,10 @@ function plot(params) {
 			// set height to height of one band
 			.attr("height", function(d, i) {
 				return scaleY.rangeBand() - 1;
+			})
+			.style("fill", function(d, i) {
+				//return linearColourScale(i);
+				return ordinalColourScale(i);
 			});
 
 	// create text labels for bars
