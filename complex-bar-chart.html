@@ -92,7 +92,7 @@ var chart = svg.append("g")
 
 function plot(params) {
 	this.append("g")
-		.call(yGridlines)
+		.call(params.gridlines)
 		.classed("gridline", true)
 		.attr("transform", "translate(0,0)")
 	// bind d3 to elements with class "bar"
@@ -155,7 +155,7 @@ function plot(params) {
 	this.append("g")
 		.classed("x axis", true)
 		.attr("transform", "translate(" + 0 + "," + innerHeight+ ")")
-		.call(xAxis)
+		.call(params.axis.x)
 			.selectAll("text")
 				.style("text-anchor", "end")
 				.attr("dx", -8)
@@ -165,7 +165,7 @@ function plot(params) {
 	this.append("g")
 		.classed("y axis", true)
 		.attr("transform", "translate(0,0)")
-		.call(yAxis);
+		.call(params.axis.y);
 
 	this.select(".y.axis")
 		.append("text")
@@ -183,12 +183,16 @@ function plot(params) {
 		.attr("transform", "translate(" + innerWidth / 2 + ", 80)")
 		.text("Donut type");
 
-
 }
 
 // use call method to allow us to assign 'this' object
 plot.call(chart, {
-	data: data
+	data: data,
+	axis: {
+		x: xAxis,
+		y: yAxis
+	},
+	gridlines: yGridlines
 });
 </script>	
 </body>
