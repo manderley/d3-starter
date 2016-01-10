@@ -27,17 +27,17 @@ var data = [
 var width = 800;
 var height = 450;
 var margin = {
-	top: 20,
-	right: 20,
+	top: 40,
+	right: 40,
 	bottom: 40,
-	left: 80
+	left: 60
 };
 var innerWidth = width - margin.left - margin.right;
 var innerHeight = height - margin.top - margin.bottom;
 
 // define functions to scale x and y values so graph will fill
 // available space
-var scaleX = d3.scale.linear()
+/*var scaleX = d3.scale.linear()
 				.domain([0, d3.max(data, function(d) {
 					return d.value;
 				})])
@@ -47,7 +47,20 @@ var scaleY = d3.scale.ordinal()
 				.domain(data.map(function(entry) {
 					return entry.key;
 				}))
-				.rangeBands([0, innerHeight]);
+				.rangeBands([0, innerHeight]);*/
+
+// flip axes
+var scaleX = d3.scale.ordinal()
+				.domain(data.map(function(entry) {
+					return entry.key;
+				}))
+				.rangeBands([0, innerWidth]);
+
+var scaleY = d3.scale.linear()
+				.domain([0, d3.max(data, function(d) {
+					return d.value;
+				})])
+				.range([innerHeight, 0]);
 
 var linearColourScale = d3.scale.linear()
 													.domain([0, data.length])
@@ -79,18 +92,24 @@ function plot(params) {
 			// append rect element for each piece of data bound above (.data(data))
 			.append("rect") 
 			.classed("bar", true)
-			.attr("x", 0)
+			//.attr("x", 0)
+			.attr("x", function(d, i) {
+				return scaleX(d.key);
+			})
 			// position each data element on the y axis
 			.attr("y", function(d, i) {
-				return scaleY(d.key);
+				//return scaleY(d.key);
+				return scaleY(d.value);
 			})
 			// set width to the value of the data item
 			.attr("width", function(d) {
-				return scaleX(d.value);
+				//return scaleX(d.value);
+				return scaleX.rangeBand();
 			})
 			// set height to height of one band
 			.attr("height", function(d, i) {
-				return scaleY.rangeBand() - 1;
+				//return scaleY.rangeBand() - 1;
+				return innerHeight - scaleY(d.value);
 			})
 			.style("fill", function(d, i) {
 				//return linearColourScale(i);
@@ -103,16 +122,22 @@ function plot(params) {
 		.enter()
 			.append("text")
 			.classed("bar-label", true)
-			.attr("x", function(d) {
+			/*.attr("x", function(d) {
 				return scaleX(d.value);
+			})*/
+			.attr("x", function(d, i) {
+				return scaleX(d.key) + (scaleX.rangeBand() / 2);
 			})
+			.attr("dx", 0)
 			.attr("y", function(d, i) {
-				return scaleY(d.key);
+				//
+				return scaleY(d.value);
 			})
 			// nudge y position
-			.attr("dy", function(d, i) {
+			/*.attr("dy", function(d, i) {
 				return scaleY.rangeBand()/1.5 + 2;
-			})
+			})*/
+			.attr("dy", -6)
 			.text(function(d) {
 				return d.value;
 			});

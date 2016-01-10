@@ -2,7 +2,7 @@ body, html {
 	margin: 0;
 	padding: 0;
 	font-family: "Arial", sans-serif;
-	font-size: 0.95em;
+	font-size: 0.9em;
 	text-align: center;
 }
 
@@ -22,9 +22,9 @@ li {
 }
 
 .bar-label {
-	fill: white;
-	text-anchor: end;
-	font-size: 20px;
+	fill: #000;
+	text-anchor: middle;
+	font-size: 18px;
 }
 
 .axis path,
