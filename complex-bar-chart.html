@@ -29,8 +29,8 @@ var height = 450;
 var margin = {
 	top: 58,
 	right: 40,
-	bottom: 72,
-	left: 60
+	bottom: 100,
+	left: 80
 };
 var innerWidth = width - margin.left - margin.right;
 var innerHeight = height - margin.top - margin.bottom;
@@ -166,6 +166,23 @@ function plot(params) {
 		.classed("y axis", true)
 		.attr("transform", "translate(0,0)")
 		.call(yAxis);
+
+	this.select(".y.axis")
+		.append("text")
+		.attr("x", 0)
+		.attr("y", 0)
+		.style("text-anchor", "middle")
+		.attr("transform", "translate(-50, " + innerHeight / 2 + ") rotate(-90)")
+		.text("Units sold");
+
+	this.select(".x.axis")
+		.append("text")
+		.attr("x", 0)
+		.attr("y", 0)
+		.style("text-anchor", "middle")
+		.attr("transform", "translate(" + innerWidth / 2 + ", 80)")
+		.text("Donut type");
+
 
 }
 
