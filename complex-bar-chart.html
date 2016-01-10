@@ -29,8 +29,8 @@ var height = 450;
 var margin = {
 	top: 20,
 	right: 20,
-	bottom: 20,
-	left: 20
+	bottom: 40,
+	left: 80
 };
 var innerWidth = width - margin.left - margin.right;
 var innerHeight = height - margin.top - margin.bottom;
@@ -54,6 +54,14 @@ var linearColourScale = d3.scale.linear()
 													.range(["#572500", "#f68026"]);
 
 var ordinalColourScale = d3.scale.category20();
+
+var xAxis = d3.svg.axis()
+						.scale(scaleX)
+						.orient("bottom");
+
+var yAxis = d3.svg.axis()
+						.scale(scaleY)
+						.orient("left");
 
 var svg = d3.select("body").append("svg")
 						.attr("id", "chart")
@@ -108,6 +116,16 @@ function plot(params) {
 			.text(function(d) {
 				return d.value;
 			});
+
+	this.append("g")
+		.classed("x axis", true)
+		.attr("transform", "translate(" + 0 + "," + innerHeight+ ")")
+		.call(xAxis);
+
+	this.append("g")
+		.classed("y axis", true)
+		.attr("transform", "translate(0,0)")
+		.call(yAxis);
 
 }
 
