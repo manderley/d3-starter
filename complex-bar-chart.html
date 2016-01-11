@@ -165,7 +165,13 @@ function plot(params) {
 		.enter()
 			// append rect element for each piece of data bound above (.data(data))
 			.append("rect") 
-			.classed("bar", true);
+			.classed("bar", true)
+			.on("mouseover", function(d, i) {
+				d3.select(this).style("fill", "yellow");
+			})
+			.on("mouseout", function(d, i) {
+				d3.select(this).style("fill", ordinalColourScale(i));
+			});
 
 	this.selectAll(".bar-label")
 		.data(params.data)
