@@ -37,19 +37,6 @@ var innerHeight = height - margin.top - margin.bottom;
 
 // define functions to scale x and y values so graph will fill
 // available space
-/*var scaleX = d3.scale.linear()
-				.domain([0, d3.max(data, function(d) {
-					return d.value;
-				})])
-				.range([0, innerWidth]);
-
-var scaleY = d3.scale.ordinal()
-				.domain(data.map(function(entry) {
-					return entry.key;
-				}))
-				.rangeBands([0, innerHeight]);*/
-
-// flip axes
 var scaleX = d3.scale.ordinal()
 				.domain(data.map(function(entry) {
 					return entry.key;
@@ -61,10 +48,6 @@ var scaleY = d3.scale.linear()
 					return d.value;
 				})])
 				.range([innerHeight, 0]);
-
-var linearColourScale = d3.scale.linear()
-													.domain([0, data.length])
-													.range(["#572500", "#f68026"]);
 
 var ordinalColourScale = d3.scale.category20();
 
@@ -82,108 +65,194 @@ var yGridlines = d3.svg.axis()
 									.tickFormat("")
 									.orient("left")
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body")
+						.append("svg")
 						.attr("id", "chart")
 						.attr("width", width)
 						.attr("height", height);
+
 var chart = svg.append("g")
 						.classed("display", true)
 						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var controls = d3.select("body")
+								.append("div")
+								.attr("id", "controls");
+
+var sort_btn = controls.append("button")
+								.html("Sort data: ascending")
+								.attr("state", 0);
+
+function drawAxis(params) {
+
+	// if calling this function for the first time,
+	// draw gridlines and axes,
+	// otherwise just update info
+	if (params.initialize) {
+
+		// draw gridlines
+		this.append("g")
+			.call(params.gridlines)
+			.classed("gridline", true)
+			.attr("transform", "translate(0,0)");
+
+		// x axis
+		this.append("g")
+			.classed("x axis", true)
+			.attr("transform", "translate(" + 0 + "," + innerHeight+ ")")
+			.call(params.axis.x)
+				.selectAll("text")
+					.classed("x-axis-label", true)
+					.style("text-anchor", "end")
+					.attr("dx", -8)
+					.attr("dy", 8)
+					.attr("transform", "translate(0,0) rotate(-45)");
+
+		// y axis
+		this.append("g")
+			.classed("y axis", true)
+			.attr("transform", "translate(0,0)")
+			.call(params.axis.y);
+
+		// y axis label
+		this.select(".y.axis")
+			.append("text")
+			.attr("x", 0)
+			.attr("y", 0)
+			.style("text-anchor", "middle")
+			.attr("transform", "translate(-50, " + innerHeight / 2 + ") rotate(-90)")
+			.text("Units sold");
+
+		// x axis label
+		this.select(".x.axis")
+			.append("text")
+			.attr("x", 0)
+			.attr("y", 0)
+			.style("text-anchor", "middle")
+			.attr("transform", "translate(" + innerWidth / 2 + ", 80)")
+			.text("Donut type");
+
+	} else {
+		this.selectAll("g.x.axis")
+			.call(params.axis.x);
+		this.selectAll(".x-axis-label")
+			.style("text-anchor", "end")
+			.attr("dx", -8)
+			.attr("dy", 8)
+			.attr("transform", "translate(0,0) rotate(-45)");
+		this.selectAll("g.y.axis")
+			.call(params.axis.y);
+	}
+}
+
 function plot(params) {
-	this.append("g")
-		.call(params.gridlines)
-		.classed("gridline", true)
-		.attr("transform", "translate(0,0)")
-	// bind d3 to elements with class "bar"
+	scaleX.domain(data.map(function(entry) {
+		return entry.key;
+	}));
+
+	scaleY.domain([0, d3.max(data, function(d) {
+		return d.value;
+	})]);
+
+	// draw axes and labels
+	drawAxis.call(this, params);
+
+	// enter() phase
 	this.selectAll(".bar")
 		.data(params.data)
 		.enter()
 			// append rect element for each piece of data bound above (.data(data))
 			.append("rect") 
-			.classed("bar", true)
-			//.attr("x", 0)
-			.attr("x", function(d, i) {
-				return scaleX(d.key);
-			})
-			// position each data element on the y axis
-			.attr("y", function(d, i) {
-				//return scaleY(d.key);
-				return scaleY(d.value);
-			})
-			// set width to the value of the data item
-			.attr("width", function(d) {
-				//return scaleX(d.value);
-				return scaleX.rangeBand();
-			})
-			// set height to height of one band
-			.attr("height", function(d, i) {
-				//return scaleY.rangeBand() - 1;
-				return innerHeight - scaleY(d.value);
-			})
-			.style("fill", function(d, i) {
-				//return linearColourScale(i);
-				return ordinalColourScale(i);
-			});
+			.classed("bar", true);
 
-	// create text labels for bars
 	this.selectAll(".bar-label")
 		.data(params.data)
 		.enter()
 			.append("text")
-			.classed("bar-label", true)
-			/*.attr("x", function(d) {
-				return scaleX(d.value);
-			})*/
-			.attr("x", function(d, i) {
-				return scaleX(d.key) + (scaleX.rangeBand() / 2);
-			})
-			.attr("dx", 0)
-			.attr("y", function(d, i) {
-				//
-				return scaleY(d.value);
-			})
-			// nudge y position
-			/*.attr("dy", function(d, i) {
-				return scaleY.rangeBand()/1.5 + 2;
-			})*/
-			.attr("dy", -6)
-			.text(function(d) {
-				return d.value;
-			});
+			.classed("bar-label", true);
 
-	this.append("g")
-		.classed("x axis", true)
-		.attr("transform", "translate(" + 0 + "," + innerHeight+ ")")
-		.call(params.axis.x)
-			.selectAll("text")
-				.style("text-anchor", "end")
-				.attr("dx", -8)
-				.attr("dy", 8)
-				.attr("transform", "translate(0,0) rotate(-45)");
+	// update phase
+	this.selectAll(".bar")
+		.attr("x", function(d, i) {
+			return scaleX(d.key);
+		})
+		// position each data element on the y axis
+		.attr("y", function(d, i) {
+			return scaleY(d.value);
+		})
+		// set width to the value of the data item
+		.attr("width", function(d) {
+			return scaleX.rangeBand();
+		})
+		// set height to height of one band
+		.attr("height", function(d, i) {
+			return innerHeight - scaleY(d.value);
+		})
+		.style("fill", function(d, i) {
+			return ordinalColourScale(i);
+		});
 
-	this.append("g")
-		.classed("y axis", true)
-		.attr("transform", "translate(0,0)")
-		.call(params.axis.y);
+	this.selectAll(".bar-label")
+		.attr("x", function(d, i) {
+			return scaleX(d.key) + (scaleX.rangeBand() / 2);
+		})
+		.attr("dx", 0)
+		.attr("y", function(d, i) {
+			return scaleY(d.value);
+		})
+		.attr("dy", -6)
+		.text(function(d) {
+			return d.value;
+		});
 
-	this.select(".y.axis")
-		.append("text")
-		.attr("x", 0)
-		.attr("y", 0)
-		.style("text-anchor", "middle")
-		.attr("transform", "translate(-50, " + innerHeight / 2 + ") rotate(-90)")
-		.text("Units sold");
+	// exit() phase
+	// remove elements which don't have corresponding data
+	this.selectAll(".bar")
+		.data(params.data)
+		.exit()
+		.remove();
 
-	this.select(".x.axis")
-		.append("text")
-		.attr("x", 0)
-		.attr("y", 0)
-		.style("text-anchor", "middle")
-		.attr("transform", "translate(" + innerWidth / 2 + ", 80)")
-		.text("Donut type");
+	this.selectAll(".bar-label")
+		.data(params.data)
+		.exit()
+		.remove();
 
 }
+
+sort_btn.on("click", function() {
+	var self = d3.select(this);
+	// as we're comparing numbers rather than strings,
+	// define compare function for sort method accordingly
+	var ascending = function(a, b) {
+		return a.value - b.value;
+	};
+	var descending = function(a, b) {
+		return b.value - a.value;
+	};
+	var state = +self.attr("state"); // n.b. type value to be number rather than string
+	var txt = "Sort data: ";
+	if (state === 0) {
+		data.sort(ascending);
+		state = 1;
+		txt += "descending";
+	} else if (state ===1) {
+		data.sort(descending);
+		state = 0;
+		txt += "ascending";
+	}
+	self.attr("state", state);
+	self.html(txt);
+
+	plot.call(chart, {
+		data: data,
+		axis: {
+			x: xAxis,
+			y: yAxis
+		},
+		gridlines: yGridlines,
+		initialize: false
+	});
+});
 
 // use call method to allow us to assign 'this' object
 plot.call(chart, {
@@ -192,7 +261,8 @@ plot.call(chart, {
 		x: xAxis,
 		y: yAxis
 	},
-	gridlines: yGridlines
+	gridlines: yGridlines,
+	initialize: true
 });
 </script>	
 </body>
