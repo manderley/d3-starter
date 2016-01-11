@@ -134,6 +134,8 @@ function drawAxis(params) {
 
 	} else {
 		this.selectAll("g.x.axis")
+			.transition()
+			.duration(500)
 			.call(params.axis.x);
 		this.selectAll(".x-axis-label")
 			.style("text-anchor", "end")
@@ -173,6 +175,8 @@ function plot(params) {
 
 	// update phase
 	this.selectAll(".bar")
+		.transition()
+		.duration(500)
 		.attr("x", function(d, i) {
 			return scaleX(d.key);
 		})
@@ -193,6 +197,8 @@ function plot(params) {
 		});
 
 	this.selectAll(".bar-label")
+		.transition()
+		.duration(500)
 		.attr("x", function(d, i) {
 			return scaleX(d.key) + (scaleX.rangeBand() / 2);
 		})
