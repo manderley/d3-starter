@@ -106,6 +106,20 @@ var line = d3.svg.line()
 							return y(d.value);
 						});
 
+// area generating function
+var area = d3.svg.area()
+						// x values for area are the same as for the path
+						.x(function(d) {
+							var date = dateParser(d.date);
+							return x(date);
+						})
+						// bottom y values
+						.y0(innerHeight)
+						// top y values, same as y values for path
+						.y1(function(d) {
+							return y(d.value);
+						});
+
 function plot(params) {
 	
 	// create axes
@@ -120,6 +134,12 @@ function plot(params) {
 			.call(params.axis.y);
 
 	// enter() phase: bind data to chart
+	this.selectAll(".area")
+		.data([params.data])
+		.enter()
+			.append("path")
+			.classed("area", true);
+
 	this.selectAll(".trendline")
 		// as the path is a single element, wrap data source in an array
 		// so it is treated as a single item
@@ -136,6 +156,11 @@ function plot(params) {
 			.attr("r", 2); // set radius to 2
 
 	// update phase: set properties which will change according to changes in data
+	this.selectAll(".area")
+		.attr("d", function(d) {
+			return area(d);
+		});
+
 	this.selectAll(".trendline")
 		.attr("d", function(d) {
 			return line(d);
@@ -151,6 +176,11 @@ function plot(params) {
 		})
 
 	// exit() phase: remove unbound elements
+	this.selectAll(".area")
+		.data([params.data])
+		.exit()
+		.remove();
+
 	this.selectAll(".trendline")
 		.data([params.data])
 		.exit()

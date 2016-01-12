@@ -46,3 +46,9 @@ li {
 	stroke: #ccc;
 	stroke-width: 4px;
 }
+
+.area {
+	opacity: 0.25;
+	stroke: #ccc;
+	stroke-width: 1px;
+}
