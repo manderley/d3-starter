@@ -84,7 +84,30 @@ var y = d3.scale.linear()
 				// set range from height of chart to 0, to allow us to draw inverse: small to large, bottom to top of screen
 				.range([innerHeight, 0]);
 
+var xAxis = d3.svg.axis()
+						.scale(x)
+						.orient("bottom")
+						.ticks(d3.time.days, 7)
+						.tickFormat(d3.time.format("%m/%d"));
+
+var yAxis = d3.svg.axis()
+						.scale(y)
+						.orient("left")
+						.ticks(5);
+
 function plot(params) {
+	
+	// create axes
+	this.append("g")
+			.classed("x axis", true)
+			.attr("transform", "translate(0, " + innerHeight + ")")
+			.call(params.axis.x);
+
+	this.append("g")
+			.classed("y axis", true)
+			.attr("transform", "translate(0, 0)")
+			.call(params.axis.y);
+
 	// enter() phase: bind data to chart
 	this.selectAll(".point")
 		.data(params.data)
@@ -110,7 +133,11 @@ function plot(params) {
 }
 
 plot.call(chart, {
-	data: data
+	data: data,
+	axis: {
+		x: xAxis,
+		y: yAxis
+	}
 });
 
 </script>	
