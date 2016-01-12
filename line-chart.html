@@ -121,6 +121,8 @@ function plot(params) {
 
 	// enter() phase: bind data to chart
 	this.selectAll(".trendline")
+		// as the path is a single element, wrap data source in an array
+		// so it is treated as a single item
 		.data([params.data])
 		.enter()
 			.append("path")
