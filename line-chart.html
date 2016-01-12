@@ -65,7 +65,7 @@ var chart = svg.append("g")
 
 var dateParser = d3.time.format("%Y/%m/%d").parse;
 
-// create scales
+// x and y scaling functions
 var x = d3.time.scale()
 				// set domain from earliest to latest date in dataset
 				// to get least and greatest value in array, use extent function
@@ -84,6 +84,7 @@ var y = d3.scale.linear()
 				// set range from height of chart to 0, to allow us to draw inverse: small to large, bottom to top of screen
 				.range([innerHeight, 0]);
 
+// functions for creating axes
 var xAxis = d3.svg.axis()
 						.scale(x)
 						.orient("bottom")
@@ -94,6 +95,16 @@ var yAxis = d3.svg.axis()
 						.scale(y)
 						.orient("left")
 						.ticks(5);
+
+// function to create path
+var line = d3.svg.line()
+						.x(function(d) {
+							var date = dateParser(d.date);
+							return x(date);
+						})
+						.y(function(d) {
+							return y(d.value);
+						});
 
 function plot(params) {
 	
@@ -109,13 +120,25 @@ function plot(params) {
 			.call(params.axis.y);
 
 	// enter() phase: bind data to chart
+	this.selectAll(".trendline")
+		.data([params.data])
+		.enter()
+			.append("path")
+			.classed("trendline", true);
+
 	this.selectAll(".point")
 		.data(params.data)
 		.enter()
 			.append("circle")
 			.classed("point", true)
 			.attr("r", 2); // set radius to 2
+
 	// update phase: set properties which will change according to changes in data
+	this.selectAll(".trendline")
+		.attr("d", function(d) {
+			return line(d);
+		});
+
 	this.selectAll(".point")
 		.attr("cx", function(d) { // cx defines x-axis coordinate of center of circle
 			var date = dateParser(d.date);
@@ -126,6 +149,11 @@ function plot(params) {
 		})
 
 	// exit() phase: remove unbound elements
+	this.selectAll(".trendline")
+		.data([params.data])
+		.exit()
+		.remove();
+
 	this.selectAll(".point")
 		.data(params.data)
 		.exit()
