@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Line chart</title>
+	<link rel="stylesheet" href="main.css">
+	<script  type="text/javascript" src="d3.min.js"></script>
+</head>
+<body>
+
+<script>
+var data = [
+	{key: "Jelly", value: 60, date: "2014/01/01" },
+	{key: "Jelly", value: 58, date: "2014/01/02" },
+	{key: "Jelly", value: 59, date: "2014/01/03" },
+	{key: "Jelly", value: 56, date: "2014/01/04" },
+	{key: "Jelly", value: 57, date: "2014/01/05" },
+	{key: "Jelly", value: 55, date: "2014/01/06" },
+	{key: "Jelly", value: 56, date: "2014/01/07" },
+	{key: "Jelly", value: 52, date: "2014/01/08" },
+	{key: "Jelly", value: 54, date: "2014/01/09" },
+	{key: "Jelly", value: 57, date: "2014/01/10" },
+	{key: "Jelly", value: 56, date: "2014/01/11" },
+	{key: "Jelly", value: 59, date: "2014/01/12" },
+	{key: "Jelly", value: 56, date: "2014/01/13" },
+	{key: "Jelly", value: 52, date: "2014/01/14" },
+	{key: "Jelly", value: 48, date: "2014/01/15" },
+	{key: "Jelly", value: 47, date: "2014/01/16" },
+	{key: "Jelly", value: 48, date: "2014/01/17" },
+	{key: "Jelly", value: 45, date: "2014/01/18" },
+	{key: "Jelly", value: 43, date: "2014/01/19" },
+	{key: "Jelly", value: 41, date: "2014/01/20" },
+	{key: "Jelly", value: 37, date: "2014/01/21" },
+	{key: "Jelly", value: 36, date: "2014/01/22" },
+	{key: "Jelly", value: 39, date: "2014/01/23" },
+	{key: "Jelly", value: 41, date: "2014/01/24" },
+	{key: "Jelly", value: 42, date: "2014/01/25" },
+	{key: "Jelly", value: 40, date: "2014/01/26" },
+	{key: "Jelly", value: 43, date: "2014/01/27" },
+	{key: "Jelly", value: 41, date: "2014/01/28" },
+	{key: "Jelly", value: 39, date: "2014/01/29" },
+	{key: "Jelly", value: 40, date: "2014/01/30" },
+	{key: "Jelly", value: 39, date: "2014/01/31" }
+];
+
+var width = 800;
+var height = 450;
+var margin = {
+	top: 58,
+	right: 40,
+	bottom: 100,
+	left: 80
+};
+var innerWidth = width - margin.left - margin.right;
+var innerHeight = height - margin.top - margin.bottom;
+
+var svg = d3.select("body").append("svg")
+						.attr("id", "chart")
+						.attr("width", width)
+						.attr("height", height)
+
+var chart = svg.append("g")
+						.classed("display", true)
+						.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+var dateParser = d3.time.format("%Y/%m/%d").parse;
+
+// create scales
+var x = d3.time.scale()
+				// set domain from earliest to latest date in dataset
+				// to get least and greatest value in array, use extent function
+				.domain(d3.extent(data, function(d) {
+					var date = dateParser(d.date);
+					return date;
+				}))
+				// set range from 0 to width of chart
+				.range([0, innerWidth]);
+
+var y = d3.scale.linear()
+				// set domain from 0 to max value of value property in dataset
+				.domain([0, d3.max(data, function(d) {
+					return d.value;
+				})])
+				// set range from height of chart to 0, to allow us to draw inverse: small to large, bottom to top of screen
+				.range([innerHeight, 0]);
+
+function plot(params) {
+	// enter() phase: bind data to chart
+	this.selectAll(".point")
+		.data(params.data)
+		.enter()
+			.append("circle")
+			.classed("point", true)
+			.attr("r", 2); // set radius to 2
+	// update phase: set properties which will change according to changes in data
+	this.selectAll(".point")
+		.attr("cx", function(d) { // cx defines x-axis coordinate of center of circle
+			var date = dateParser(d.date);
+			return x(date); // x scale expects JS date object
+		})
+		.attr("cy", function(d) {
+			return y(d.value);
+		})
+
+	// exit() phase: remove unbound elements
+	this.selectAll(".point")
+		.data(params.data)
+		.exit()
+		.remove();
+}
+
+plot.call(chart, {
+	data: data
+});
+
+</script>	
+</body>
+</html>
