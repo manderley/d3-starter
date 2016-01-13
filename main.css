@@ -43,12 +43,14 @@ li {
 
 .trendline {
 	fill: none;
-	stroke: #ccc;
+	stroke: red;
 	stroke-width: 4px;
+	/*stroke-dasharray: 10;*/
 }
 
 .area {
 	opacity: 0.25;
-	stroke: #ccc;
+	fill: red;
+	stroke: red;
 	stroke-width: 1px;
 }

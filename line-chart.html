@@ -104,7 +104,8 @@ var line = d3.svg.line()
 						})
 						.y(function(d) {
 							return y(d.value);
-						});
+						})
+						.interpolate("monotone");
 
 // area generating function
 var area = d3.svg.area()
@@ -118,7 +119,8 @@ var area = d3.svg.area()
 						// top y values, same as y values for path
 						.y1(function(d) {
 							return y(d.value);
-						});
+						})
+						.interpolate("monotone");
 
 function plot(params) {
 	
