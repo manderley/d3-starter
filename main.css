@@ -6,6 +6,10 @@ body, html {
 	text-align: center;
 }
 
+body {
+	padding: 12px;
+}
+
 li {
 	text-align: left;
 	font-size: 18px;
@@ -48,9 +52,25 @@ li {
 	/*stroke-dasharray: 10;*/
 }
 
+.trendline.london {
+	stroke: blue;
+}
+
 .area {
 	opacity: 0.25;
 	fill: red;
 	stroke: red;
 	stroke-width: 1px;
+}
+
+#key, #data-source {
+	text-align: left;
+}
+
+#key .malaga {
+	color: red;
+}
+
+#key .london {
+	color: blue;
 }

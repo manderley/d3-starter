@@ -7,6 +7,7 @@
 	<script  type="text/javascript" src="d3.min.js"></script>
 </head>
 <body>
+	<h1>Average monthly maximum temperatures in M&aacute;laga and London</h1>
 
 <script>
 var dataMalaga = [
@@ -58,6 +59,34 @@ var svg = d3.select("body").append("svg")
 var chart = svg.append("g")
 						.classed("display", true)
 						.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+var key = d3.select("body")
+						.append("div")
+						.attr("id", "key");
+
+var key_heading = key.append("h2")
+										.html("Key");
+
+var key_1 = key.append("p")
+							.classed("malaga", true)
+							.html("Malaga");
+
+var key_2 = key.append("p")
+							.classed("london", true)
+							.html("London");
+
+var data_source = d3.select("body")
+										.append("div")
+										.attr("id", "data-source");
+
+var data_source_heading = data_source.append("h2")
+														.html("Data sources");
+
+var data_source_1 = data_source.append("p")
+											.html("Agencia Estatal de Meteorolog&iacute;a (AEMET)");
+
+var data_source_2 = data_source.append("p")
+											.html("Met Office");
 
 // x and y scaling functions
 var x = d3.scale.ordinal()
