@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Line chart</title>
+	<link rel="stylesheet" href="main.css">
+	<script  type="text/javascript" src="d3.min.js"></script>
+</head>
+<body>
+
+<script>
+var dataMalaga = [
+	{month: "January", temp: 16.8 },
+	{month: "February", temp: 17.7 },
+	{month: "March", temp: 19.6 },
+	{month: "April", temp: 21.4 },
+	{month: "May", temp: 24.3 },
+	{month: "June", temp: 28.1 },
+	{month: "July", temp: 30.5 },
+	{month: "August", temp: 30.8 },
+	{month: "September", temp: 28.2 },
+	{month: "October", temp: 24.1 },
+	{month: "November", temp: 20.1 },
+	{month: "December", temp: 17.5 }
+];
+
+var dataLondon = [
+	{month: "January", temp: 8.1 },
+	{month: "February", temp: 8.6 },
+	{month: "March", temp: 11.6 },
+	{month: "April", temp: 14.6 },
+	{month: "May", temp: 18.1 },
+	{month: "June", temp: 21.0 },
+	{month: "July", temp: 23.4 },
+	{month: "August", temp: 23.1 },
+	{month: "September", temp: 20.0 },
+	{month: "October", temp: 15.5 },
+	{month: "November", temp: 11.3 },
+	{month: "December", temp: 8.4 }
+];
+
+var width = 800;
+var height = 450;
+var margin = {
+	top: 58,
+	right: 40,
+	bottom: 100,
+	left: 80
+};
+var innerWidth = width - margin.left - margin.right;
+var innerHeight = height - margin.top - margin.bottom;
+
+var svg = d3.select("body").append("svg")
+						.attr("id", "chart")
+						.attr("width", width)
+						.attr("height", height)
+
+var chart = svg.append("g")
+						.classed("display", true)
+						.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+// x and y scaling functions
+var x = d3.scale.ordinal()
+				.domain(dataMalaga.map(function(d) {
+					return d.month;
+				}))
+				.rangePoints([0, innerWidth]);
+
+var y = d3.scale.linear()
+				.domain([0, d3.max(dataMalaga, function(d) {
+					return d.temp;
+				})])
+				.range([innerHeight, 0]);
+
+// functions for creating axes
+var xAxis = d3.svg.axis()
+						.scale(x)
+						.orient("bottom");
+
+var yAxis = d3.svg.axis()
+						.scale(y)
+						.orient("left");
+
+// function to create path
+var line = d3.svg.line()
+						.x(function(d) {
+							return x(d.month);
+						})
+						.y(function(d) {
+							return y(d.temp);
+						})
+						.interpolate("monotone");
+
+function plot(params) {
+	
+	// create axes
+	this.append("g")
+			.classed("x axis", true)
+			.attr("transform", "translate(0, " + innerHeight + ")")
+			.call(params.axis.x)
+				.selectAll("text")
+					.classed("x-axis-label", true)
+					.style("text-anchor", "end")
+					.attr("dx", -8)
+					.attr("dy", 8)
+					.attr("transform", "translate(0,0) rotate(-45)");;
+
+	this.append("g")
+			.classed("y axis", true)
+			.attr("transform", "translate(0, 0)")
+			.call(params.axis.y);
+
+	// y axis label
+	this.select(".y.axis")
+		.append("text")
+		.attr("x", 0)
+		.attr("y", 0)
+		.style("text-anchor", "middle")
+		.attr("transform", "translate(-50, " + innerHeight / 2 + ") rotate(-90)")
+		.text("Temperature (C)");
+
+	// x axis label
+	this.select(".x.axis")
+		.append("text")
+		.attr("x", 0)
+		.attr("y", 0)
+		.style("text-anchor", "middle")
+		.attr("transform", "translate(" + innerWidth / 2 + ", 80)")
+		.text("Month");
+
+	// enter() phase: bind data to chart
+	// Malaga line
+	this.selectAll(".trendline.malaga")
+		.data([params.data[0]])
+		.enter()
+			.append("path")
+			.classed("trendline malaga", true);
+
+	// Malaga points
+	this.selectAll(".point.malaga")
+		.data(params.data[0])
+		.enter()
+			.append("circle")
+			.classed("point malaga", true)
+			.attr("r", 2);
+
+	// update phase: set properties which will change according to changes in data
+	this.selectAll(".trendline.malaga")
+		.attr("d", function(d) {
+			return line(d);
+		});
+
+	this.selectAll(".point.malaga")
+		.attr("cx", function(d) {
+			return x(d.month); 
+		})
+		.attr("cy", function(d) {
+			return y(d.temp);
+		})
+
+	// exit() phase: remove unbound elements
+	this.selectAll(".trendline.malaga")
+		.data([params.data[0]])
+		.exit()
+		.remove();
+
+	this.selectAll(".point.malaga")
+		.data(params.data[0])
+		.exit()
+		.remove();
+}
+
+plot.call(chart, {
+	data: [dataMalaga, dataLondon],
+	axis: {
+		x: xAxis,
+		y: yAxis
+	}
+});
+
+</script>	
+</body>
+</html>
