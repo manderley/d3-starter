@@ -67,7 +67,7 @@ function drawAxis(params) {
 		.attr("transform", "translate(0,0)")
 		.call(params.axis.gridlines.y);
 	this.append("g")
-		.classed("gridline y", true)
+		.classed("axis y", true)
 		.attr("transform", "translate(0,0)")
 		.call(params.axis.y);
 }
