@@ -40,13 +40,30 @@ var y = d3.scale.linear()
 					.domain([1, 5])
 					.range([innerHeight, 0]);
 
+var yAxis = d3.svg.axis()
+							.scale(y)
+							.ticks(5)
+							.tickSize(20)
+							.tickFormat(function(d) {
+								return d.toFixed(1);
+							})
+							.orient("left");
+
 var responseScale = d3.scale.linear()
 											.domain(d3.extent(data, function(d) {
 												return d.responses;
 											}))
 											.range([2, 15]);
 
+function drawAxis(params) {
+	this.append("g")
+		.classed("gridline y", true)
+		.attr("transform", "translate(0,0)")
+		.call(params.axis.y);
+}
+
 function plot(params) {
+	drawAxis.call(this, params);
 	var self = this;
 
 	var donuts = d3.keys(params.data[0]).filter(function(d) {
@@ -102,7 +119,10 @@ function plot(params) {
 }
 
 plot.call(chart, {
-	data: data
+	data: data,
+	axis: {
+		y: yAxis
+	}
 });
 </script>	
 </body>
