@@ -62,14 +62,16 @@ var responseScale = d3.scale.linear()
 											.range([2, 15]);
 
 function drawAxis(params) {
-	this.append("g")
-		.classed("gridline y", true)
-		.attr("transform", "translate(0,0)")
-		.call(params.axis.gridlines.y);
-	this.append("g")
-		.classed("axis y", true)
-		.attr("transform", "translate(0,0)")
-		.call(params.axis.y);
+	if (params.initialize) {
+		this.append("g")
+			.classed("gridline y", true)
+			.attr("transform", "translate(0,0)")
+			.call(params.axis.gridlines.y);
+		this.append("g")
+			.classed("axis y", true)
+			.attr("transform", "translate(0,0)")
+			.call(params.axis.y);
+	}
 }
 
 function plot(params) {
@@ -135,7 +137,8 @@ plot.call(chart, {
 		gridlines: {
 			y: yGridlines
 		}
-	}
+	},
+	initialize: true
 });
 </script>	
 </body>
