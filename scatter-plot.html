@@ -49,6 +49,12 @@ var yAxis = d3.svg.axis()
 							})
 							.orient("left");
 
+var yGridlines = d3.svg.axis()
+									.scale(y)
+									.tickSize(-innerWidth,0,0)
+									.tickFormat("")
+									.orient("left");
+
 var responseScale = d3.scale.linear()
 											.domain(d3.extent(data, function(d) {
 												return d.responses;
@@ -56,6 +62,10 @@ var responseScale = d3.scale.linear()
 											.range([2, 15]);
 
 function drawAxis(params) {
+	this.append("g")
+		.classed("gridline y", true)
+		.attr("transform", "translate(0,0)")
+		.call(params.axis.gridlines.y);
 	this.append("g")
 		.classed("gridline y", true)
 		.attr("transform", "translate(0,0)")
@@ -121,7 +131,10 @@ function plot(params) {
 plot.call(chart, {
 	data: data,
 	axis: {
-		y: yAxis
+		y: yAxis,
+		gridlines: {
+			y: yGridlines
+		}
 	}
 });
 </script>	
