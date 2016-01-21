@@ -40,6 +40,13 @@ var y = d3.scale.linear()
 					.domain([1, 5])
 					.range([innerHeight, 0]);
 
+var tickValues = [18,25,32,39,46,53,60,67,74];
+
+var xAxis = d3.svg.axis()
+							.scale(x)
+							.tickValues(tickValues)
+							.orient("bottom");
+
 var yAxis = d3.svg.axis()
 							.scale(y)
 							.ticks(5)
@@ -48,6 +55,13 @@ var yAxis = d3.svg.axis()
 								return d.toFixed(1);
 							})
 							.orient("left");
+
+var xGridlines = d3.svg.axis()
+									.scale(x)
+									.tickValues(tickValues)
+									.tickSize(-innerHeight, -innerHeight)
+									.tickFormat("")
+									.orient("bottom");
 
 var yGridlines = d3.svg.axis()
 									.scale(y)
@@ -64,9 +78,17 @@ var responseScale = d3.scale.linear()
 function drawAxis(params) {
 	if (params.initialize) {
 		this.append("g")
+			.classed("gridline x", true)
+			.attr("transform", "translate(0," + innerHeight + ")")
+			.call(params.axis.gridlines.x);
+		this.append("g")
 			.classed("gridline y", true)
 			.attr("transform", "translate(0,0)")
 			.call(params.axis.gridlines.y);
+		this.append("g")
+			.classed("axis x", true)
+			.attr("transform", "translate(0," + innerHeight + ")")
+			.call(params.axis.x);
 		this.append("g")
 			.classed("axis y", true)
 			.attr("transform", "translate(0,0)")
@@ -133,8 +155,10 @@ function plot(params) {
 plot.call(chart, {
 	data: data,
 	axis: {
+		x: xAxis,
 		y: yAxis,
 		gridlines: {
+			x: xGridlines,
 			y: yGridlines
 		}
 	},
