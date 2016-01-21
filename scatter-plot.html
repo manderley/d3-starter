@@ -30,6 +30,8 @@ var chart = svg.append("g")
 						.classed("display", true)
 						.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
+var colorScale = d3.scale.category10();
+
 var x = d3.scale.linear()
 					.domain(d3.extent(data, function(d) {
 						return d.age;
@@ -104,6 +106,7 @@ function plot(params) {
 		return d !== "age" && d !== "responses";
 	});
 
+	// enter() for <g>
 	this.selectAll(".donut")
 		.data(donuts)
 		.enter()
@@ -112,6 +115,12 @@ function plot(params) {
 				return d;
 			})
 			.classed("donut", true);
+
+	// update for <g>
+	this.selectAll(".donut")
+		.style("fill", function(d,i) {
+			return colorScale(i);
+		});
 
 	donuts.forEach(function(donut) {
 		var g = self.selectAll("g."+donut);

@@ -74,3 +74,7 @@ li {
 #key .london {
 	color: blue;
 }
+
+.donut {
+	opacity: 0.1;
+}
