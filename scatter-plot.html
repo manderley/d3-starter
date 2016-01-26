@@ -95,6 +95,16 @@ function drawAxis(params) {
 			.classed("axis y", true)
 			.attr("transform", "translate(0,0)")
 			.call(params.axis.y);
+		this.select(".y.axis")
+			.append("text")
+			.classed("y axis-label", true)
+			.attr("transform", "translate(-56, " + innerHeight/2 + ") rotate(-90)")
+			.text("Rating (1=Low, 5=High)")
+		this.select(".x.axis")
+			.append("text")
+			.classed("x axis-label", true)
+			.attr("transform", "translate(" + innerWidth/2 + ", 48)")
+			.text("Customer age")
 	}
 }
 

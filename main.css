@@ -78,3 +78,7 @@ li {
 .donut {
 	opacity: 0.1;
 }
+
+.axis-label {
+	text-anchor: middle;
+}
