@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="d3.min.js"></script>
 </head>
 <body>
-<script type="text/javascript" src="survey_data.js"></script>
+<!--<script type="text/javascript" src="survey_data.js"></script>-->
 <script>
 
 var width = 800;
@@ -33,9 +33,6 @@ var chart = svg.append("g")
 var colorScale = d3.scale.category10();
 
 var x = d3.scale.linear()
-					.domain(d3.extent(data, function(d) {
-						return d.age;
-					}))
 					.range([0, innerWidth]);
 
 var y = d3.scale.linear()
@@ -72,9 +69,6 @@ var yGridlines = d3.svg.axis()
 									.orient("left");
 
 var responseScale = d3.scale.linear()
-											.domain(d3.extent(data, function(d) {
-												return d.responses;
-											}))
 											.range([2, 15]);
 
 function drawAxis(params) {
@@ -113,6 +107,12 @@ function drawAxis(params) {
 }
 
 function plot(params) {
+	x.domain(d3.extent(params.data, function(d) {
+		return d.age;
+	}));
+	responseScale.domain(d3.extent(params.data, function(d) {
+		return d.responses;
+	}));
 	drawAxis.call(this, params);
 	var self = this;
 
@@ -195,18 +195,21 @@ function plot(params) {
 	});
 }
 
-plot.call(chart, {
-	data: data,
-	axis: {
-		x: xAxis,
-		y: yAxis,
-		gridlines: {
-			x: xGridlines,
-			y: yGridlines
-		}
-	},
-	initialize: true
-});
+d3.csv("survey_data.csv", function(error, parsed_data) {
+	plot.call(chart, {
+		data: parsed_data,
+		axis: {
+			x: xAxis,
+			y: yAxis,
+			gridlines: {
+				x: xGridlines,
+				y: yGridlines
+			}
+		},
+		initialize: true
+	});
+})
+
 </script>	
 </body>
 </html>
