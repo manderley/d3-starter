@@ -82,3 +82,8 @@ li {
 .axis-label {
 	text-anchor: middle;
 }
+
+.chart-header {
+	text-transform: capitalize;
+	font-size: 125%;
+}

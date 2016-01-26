@@ -99,12 +99,16 @@ function drawAxis(params) {
 			.append("text")
 			.classed("y axis-label", true)
 			.attr("transform", "translate(-56, " + innerHeight/2 + ") rotate(-90)")
-			.text("Rating (1=Low, 5=High)")
+			.text("Rating (1=Low, 5=High)");
 		this.select(".x.axis")
 			.append("text")
 			.classed("x axis-label", true)
 			.attr("transform", "translate(" + innerWidth/2 + ", 48)")
-			.text("Customer age")
+			.text("Customer age");
+		this.append("g")
+			.append("text")
+			.classed("chart-header", true)
+			.attr("transform", "translate(0,-24)");
 	}
 }
 
@@ -170,6 +174,16 @@ function plot(params) {
 			})
 			.attr("cy", function(d) {
 				return y(d.value);
+			})
+			.on("mouseover", function(d, i) {
+				var str = d.key + " donut: ";
+				str += "Age: " + d.age + " ";
+				str += "Responses: " + d.responses + " ";
+				str += "Average Rating: " + d.value;
+				d3.select(".chart-header").text(str);
+			})
+			.on("mouseout", function(d, i) {
+				d3.select(".chart-header").text("");
 			})
 
 		// exit()
